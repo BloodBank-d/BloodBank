@@ -14,10 +14,20 @@ import { useRouter } from "next/navigation"
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
+interface UserProfile {
+  full_name?: string
+  phone?: string
+  age?: number
+  blood_group?: string
+  address?: string
+  avatar_url?: string
+  email?: string
+}
+
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [profile, setProfile] = useState<any>(null)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -29,11 +39,7 @@ export default function ProfilePage() {
   const supabase = createClientComponentClient()
   const router = useRouter()
 
-  useEffect(() => {
-    fetchProfile()
-  }, [])
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     setLoading(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -63,7 +69,15 @@ export default function ProfilePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase, router])
+
+  useEffect(() => {
+    const init = async () => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      await fetchProfile()
+    }
+    init()
+  }, [fetchProfile])
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -84,7 +84,11 @@ export default function DashboardPage() {
         }
       )
     }
-    fetchDonors()
+    const init = async () => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      await fetchDonors()
+    }
+    init()
   }, [fetchDonors])
 
   return (

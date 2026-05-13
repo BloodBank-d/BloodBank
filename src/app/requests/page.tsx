@@ -55,7 +55,11 @@ export default function RequestsPage() {
   }, [filter, supabase])
 
   useEffect(() => {
-    fetchRequests()
+    const init = async () => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      await fetchRequests()
+    }
+    init()
   }, [fetchRequests])
 
   return (
