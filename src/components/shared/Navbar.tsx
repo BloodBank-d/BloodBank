@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Droplets, Menu, X, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ThemeToggle } from "./ThemeToggle"
 import { createClientComponentClient } from "@/lib/supabase"
@@ -22,6 +22,18 @@ export default function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [user, setUser] = useState<any>(null)
   const supabase = createClientComponentClient()
+
+  const checkAdmin = useCallback(async (userId: string) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single()
+    
+    if (profile?.role === 'admin') {
+      setIsAdmin(true)
+    }
+  }, [supabase])
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -44,19 +56,7 @@ export default function Navbar() {
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase])
-
-  const checkAdmin = async (userId: string) => {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single()
-    
-    if (profile?.role === 'admin') {
-      setIsAdmin(true)
-    }
-  }
+  }, [supabase, checkAdmin])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

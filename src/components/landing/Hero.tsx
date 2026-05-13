@@ -72,7 +72,7 @@ export default function Hero() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300"
           >
-            Join Bharat's most advanced blood donation network. We use real-time geolocation to connect you with donors exactly when every second counts.
+            Join Bharat&apos;s most advanced blood donation network. We use real-time geolocation to connect you with donors exactly when every second counts.
           </motion.p>
 
           <motion.div 

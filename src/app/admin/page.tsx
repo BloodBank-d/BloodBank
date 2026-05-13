@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Users, Droplets, AlertCircle, Building2, Trash2, CheckCircle, XCircle, LayoutDashboard, Search } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,10 +11,27 @@ import { createClientComponentClient } from "@/lib/supabase"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
+interface AdminUser {
+  id: string
+  full_name: string
+  email: string
+  blood_group: string
+  role: string
+}
+
+interface AdminRequest {
+  id: string
+  patient_name: string
+  hospital_name: string
+  blood_group: string
+  urgency_level: string
+  status: string
+}
+
 export default function AdminPage() {
   const [loading, setLoading] = useState(true)
-  const [users, setUsers] = useState<any[]>([])
-  const [requests, setRequests] = useState<any[]>([])
+  const [users, setUsers] = useState<AdminUser[]>([])
+  const [requests, setRequests] = useState<AdminRequest[]>([])
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalRequests: 0,
@@ -24,12 +41,7 @@ export default function AdminPage() {
   const supabase = createClientComponentClient()
   const router = useRouter()
 
-  useEffect(() => {
-    checkAdmin()
-    fetchData()
-  }, [])
-
-  const checkAdmin = async () => {
+  const checkAdmin = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       router.push("/login")
@@ -46,9 +58,9 @@ export default function AdminPage() {
       toast.error("Access denied. Admin only.")
       router.push("/dashboard")
     }
-  }
+  }, [supabase, router])
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     try {
       const [usersRes, requestsRes] = await Promise.all([
@@ -65,14 +77,23 @@ export default function AdminPage() {
       setStats({
         totalUsers: usersRes.data?.length || 0,
         totalRequests: requestsRes.data?.length || 0,
-        activeEmergencies: requestsRes.data?.filter(r => r.urgency_level === 'Critical' || r.urgency_level === 'Urgent').length || 0,
+        activeEmergencies: requestsRes.data?.filter((r: any) => r.urgency_level === 'Critical' || r.urgency_level === 'Urgent').length || 0,
       })
     } catch (error: any) {
       toast.error(error.message || "Failed to fetch admin data")
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase])
+
+  useEffect(() => {
+    const init = async () => {
+      await checkAdmin()
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      await fetchData()
+    }
+    init()
+  }, [checkAdmin, fetchData])
 
   const deleteUser = async (id: string) => {
     if (!confirm("Are you sure you want to delete this user?")) return
