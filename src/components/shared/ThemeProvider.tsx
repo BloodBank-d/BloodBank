@@ -13,42 +13,37 @@ const ThemeContext = React.createContext<ThemeProviderContext | undefined>(undef
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  attribute = "class"
+  defaultTheme = "system"
 }: {
   children: React.ReactNode
   defaultTheme?: Theme
-  attribute?: string
 }) {
   const [theme, setTheme] = React.useState<Theme>(defaultTheme)
+  const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as Theme
+    if (savedTheme) {
+      setTheme(savedTheme)
+    }
+    setMounted(true)
+  }, [])
+
+  React.useEffect(() => {
+    if (!mounted) return
     const root = window.document.documentElement
-    const initialTheme = localStorage.getItem("theme") as Theme || defaultTheme
-    
-    setTheme(initialTheme)
-    
-    if (initialTheme === "system") {
+    root.classList.remove("light", "dark")
+    if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
       root.classList.add(systemTheme)
     } else {
-      root.classList.add(initialTheme)
+      root.classList.add(theme)
     }
-  }, [defaultTheme])
+  }, [theme, mounted])
 
   const value = React.useMemo(() => ({
     theme,
     setTheme: (newTheme: Theme) => {
-      const root = window.document.documentElement
-      root.classList.remove("light", "dark")
-      
-      if (newTheme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-        root.classList.add(systemTheme)
-      } else {
-        root.classList.add(newTheme)
-      }
-      
       localStorage.setItem("theme", newTheme)
       setTheme(newTheme)
     }
