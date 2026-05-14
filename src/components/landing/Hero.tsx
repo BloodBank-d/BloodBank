@@ -50,7 +50,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white"
+            className="mt-10 text-3xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white"
           >
             Rakt Daan, <span className="text-primary relative inline-block">
               Mahadaan.
@@ -79,14 +79,14 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="mt-10 flex items-center gap-x-6"
+            className="mt-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-x-6"
           >
-            <Link href="/requests/new">
-              <Button size="lg" className="h-12 px-8 rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1">
+            <Link href="/requests/new" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full h-12 px-8 rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1">
                 Post Request <Zap className="ml-2 h-4 w-4 fill-current" />
               </Button>
             </Link>
-            <Link href="/dashboard" className="text-sm font-semibold leading-6 text-gray-900 dark:text-white flex items-center gap-2 group">
+            <Link href="/dashboard" className="text-sm font-semibold leading-6 text-gray-900 dark:text-white flex items-center gap-2 group py-2">
               Find Donors <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </motion.div>

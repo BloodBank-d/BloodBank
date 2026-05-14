@@ -70,10 +70,10 @@ export default function EmergencyRequestCard({ request }: RequestCardProps) {
         )}
 
         <div className="pt-4 flex flex-col gap-2 border-t">
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <a 
               href={`tel:${request.contact_number}`}
-              className={cn(buttonVariants({ variant: "outline", className: "flex-1" }))}
+              className={cn(buttonVariants({ variant: "outline", className: "w-full sm:flex-1" }))}
             >
               <Phone className="h-4 w-4 mr-2" /> Call
             </a>
@@ -85,7 +85,7 @@ export default function EmergencyRequestCard({ request }: RequestCardProps) {
               rel="noopener noreferrer"
               className={cn(buttonVariants({ 
                 variant: request.urgency_level === 'Critical' ? 'destructive' : 'default',
-                className: "flex-1 gap-2" 
+                className: "w-full sm:flex-1 gap-2" 
               }))}
             >
               Donate Now

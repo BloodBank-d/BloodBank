@@ -66,12 +66,12 @@ export default function RequestsPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Active Blood Requests</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Active Blood Requests</h1>
           <p className="text-gray-600 mt-2">View and respond to urgent blood needs in your area.</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
           <Select onValueChange={(val: string | null) => val && setFilter(val)} defaultValue="all">
-            <SelectTrigger className="w-48 bg-white">
+            <SelectTrigger className="w-full sm:w-48 bg-white">
               <SelectValue placeholder="Filter Blood Group" />
             </SelectTrigger>
             <SelectContent>
@@ -79,8 +79,8 @@ export default function RequestsPage() {
               {bloodGroups.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Link href="/requests/new">
-            <Button className="gap-2">
+          <Link href="/requests/new" className="w-full sm:w-auto">
+            <Button className="w-full gap-2">
               <Plus className="h-4 w-4" /> New Request
             </Button>
           </Link>
