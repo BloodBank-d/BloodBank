@@ -77,9 +77,19 @@ export default function EmergencyRequestCard({ request }: RequestCardProps) {
             >
               <Phone className="h-4 w-4 mr-2" /> Call
             </a>
-            <Button className="flex-1 gap-2" variant={request.urgency_level === 'Critical' ? 'destructive' : 'default'}>
+            <a 
+              href={`https://wa.me/${request.contact_number.replace(/\D/g, '')}?text=${encodeURIComponent(
+                `Hello! I saw your blood request for ${request.patient_name} on Lifeline Bharat. I would like to help by donating ${request.blood_group} blood. \n\n"To the world you may be one person, but to one person you may be the world." \n\nPlease let me know the process or if there is anything specific I should know. I am ready to help!`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ 
+                variant: request.urgency_level === 'Critical' ? 'destructive' : 'default',
+                className: "flex-1 gap-2" 
+              }))}
+            >
               Donate Now
-            </Button>
+            </a>
           </div>
           <a 
             href={`https://wa.me/?text=${encodeURIComponent(
