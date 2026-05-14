@@ -33,20 +33,29 @@ export default function LoginPage() {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (user) {
-        const { data: profile } = await supabase
+        // Fetch profile with a small retry or just check once
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)
           .single()
 
+        if (profileError) {
+          console.error("Profile fetch error:", profileError)
+          // Default to dashboard if profile can't be fetched
+          router.push("/dashboard")
+          return
+        }
+
         toast.success("Logged in successfully")
         
+        // Use window.location for a hard redirect to ensure all components/middleware 
+        // pick up the new auth state correctly.
         if (profile?.role === 'admin') {
-          router.push("/admin")
+          window.location.href = "/admin"
         } else {
-          router.push("/dashboard")
+          window.location.href = "/dashboard"
         }
-        router.refresh()
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to login")

@@ -49,7 +49,7 @@ export default function Home() {
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl">
               <div className="absolute inset-0 bg-red-900/10 mix-blend-multiply" />
               <img 
-                src="https://images.unsplash.com/photo-1615461066841-6116ecaaba7f?auto=format&fit=crop&q=80&w=1200" 
+                src="/images/blood-donation.png" 
                 alt="Blood donation"
                 className="w-full h-full object-cover"
               />

@@ -24,14 +24,21 @@ export default function Navbar() {
   const supabase = createClientComponentClient()
 
   const checkAdmin = useCallback(async (userId: string) => {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single()
-    
-    if (profile?.role === 'admin') {
-      setIsAdmin(true)
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single()
+      
+      if (profile?.role === 'admin') {
+        setIsAdmin(true)
+      } else {
+        setIsAdmin(false)
+      }
+    } catch (error) {
+      console.error("Navbar admin check failed:", error)
+      setIsAdmin(false)
     }
   }, [supabase])
 

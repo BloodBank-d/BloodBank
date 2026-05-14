@@ -42,20 +42,33 @@ export default function AdminPage() {
   const router = useRouter()
 
   const checkAdmin = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      router.push("/login")
-      return
-    }
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      if (authError || !user) {
+        console.error("Auth error or no user:", authError)
+        router.push("/login")
+        return
+      }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
 
-    if (profile?.role !== 'admin') {
-      toast.error("Access denied. Admin only.")
+      if (profileError || !profile) {
+        console.error("Admin check profile error:", profileError)
+        toast.error("Error verifying admin status.")
+        router.push("/dashboard")
+        return
+      }
+
+      if (profile.role !== 'admin') {
+        toast.error("Access denied. Admin only.")
+        router.push("/dashboard")
+      }
+    } catch (err) {
+      console.error("Unexpected error in checkAdmin:", err)
       router.push("/dashboard")
     }
   }, [supabase, router])
